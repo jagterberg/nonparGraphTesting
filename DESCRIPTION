@@ -1,0 +1,12 @@
+Package: optimalTransportInvariance
+Type: Package
+Title: Solve different-sized otpimal transport problems
+Version: 0.1.0
+Author: Joshua Agterberg
+Maintainer: Joshua Agterberg <jagterberg@jhu.edu>
+Description: Solves the optimal transport problem with invariance to orthogonal matrices.
+Encoding: UTF-8
+LazyData: true
+Suggests: knitr, rmarkdown
+VignetteBuilder: knitr
+RoxygenNote: 6.1.1

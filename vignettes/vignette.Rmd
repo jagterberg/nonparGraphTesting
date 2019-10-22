@@ -1,0 +1,18 @@
+---
+title: "Matching point clouds up to orthogonal invariance"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Matching point clouds up to orthogonal invariance}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+This package is created to match point clouds up to an orthogonal invariance.  In particular, the goal is to optimize $$\min_{Q,P}||XQ - PY||_F^2$$ where $Q$ is an orthogonal $d \times d$ matrix and $P$ is an $n \times m$ assignment matrix. This is exactly the optimal transport problem.
+
+The problem minimizes by alternating over minimizing $Q$ and $P$, where $P$ is found by minimizing a penalized problem that admits a solution in the cost matrix.  I will update this more later.
+
+
+
+
+
+
+
