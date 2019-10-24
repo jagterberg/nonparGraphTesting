@@ -2,8 +2,7 @@
 % Please edit documentation in R/optimal_transport.R
 \name{iterative_optimal_transport}
 \alias{iterative_optimal_transport}
-\title{Function to iterate optimal transport based on sinkhorn divergence, for a fixed
-penalization parameter}
+\title{Iterate the optimal transport problem with penalization for different lambda.}
 \usage{
 iterative_optimal_transport(X, Y, Q = NULL, lambda = 0.01,
   eps = 0.01, numReps = 1000)

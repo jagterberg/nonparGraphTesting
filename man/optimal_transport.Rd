@@ -2,9 +2,7 @@
 % Please edit documentation in R/optimal_transport.R
 \name{optimal_transport}
 \alias{optimal_transport}
-\title{Optimally transport according to wasserstein cost
-C_{ij} = d(QX_i, Y_j)^2
-Give two matrices of dimensions n x d and m x y respectively}
+\title{solve the Optimal transport problem}
 \usage{
 optimal_transport(X, Y, Q = NULL, lambda = 0.1, eps = 0.01)
 }
@@ -24,6 +22,7 @@ P, the n x m matrix of assignments
 }
 \description{
 Optimally transport according to wasserstein cost
-C_{ij} = d(QX_i, Y_j)^2
+C_{ij} = d(QX_i, Y_j)^2.  this is the usual optimal transport problem
+except with an allowance of a parameter Q for an orthogonal matrix.
 Give two matrices of dimensions n x d and m x y respectively
 }

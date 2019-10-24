@@ -2,7 +2,7 @@
 % Please edit documentation in R/optimal_transport.R
 \name{procrustes}
 \alias{procrustes}
-\title{Function to find the optimal Q.  Classic Procrustes}
+\title{Procrustes}
 \usage{
 procrustes(X, Y, Pi = NULL)
 }
@@ -17,5 +17,6 @@ procrustes(X, Y, Pi = NULL)
 the procrustes solution
 }
 \description{
-Function to find the optimal Q.  Classic Procrustes
+Function to find the optimal Q.  Classic Procrustes, but with the allowance
+of an assignment matrix.
 }

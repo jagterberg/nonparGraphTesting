@@ -2,12 +2,7 @@
 % Please edit documentation in R/optimal_transport.R
 \name{solve_optimal_transport}
 \alias{solve_optimal_transport}
-\title{Function to iterate over a decreasing sequence of lambdas, the penalization parameters.
-If lambda is big, the function is more concave, so we iterate, starting
-from Lambda = .5, and decreasing each time by alpha.
-This method takes longer, but is more likely to converge to the true solution,
-since we start from a more concave problem and iteratively solve it by setting
-lambda = alpha * lambda, for alpha \in (0,1).}
+\title{Match datasets}
 \usage{
 solve_optimal_transport(X, Y, Q = NULL, lambda_init = 0.5,
   lambda_final = 1e-04, alpha = 0.95, eps = 0.01, numReps = 100)

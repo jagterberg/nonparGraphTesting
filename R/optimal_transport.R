@@ -1,5 +1,7 @@
-#' Optimally transport according to wasserstein cost
-#' C_{ij} = d(QX_i, Y_j)^2
+#' solve the Optimal transport problem
+#' @description Optimally transport according to wasserstein cost
+#' C_{ij} = d(QX_i, Y_j)^2.  this is the usual optimal transport problem
+#' except with an allowance of a parameter Q for an orthogonal matrix.
 #' Give two matrices of dimensions n x d and m x y respectively
 #' @param X an n x d matrix of points where each row is a point
 #' @param Y similar, except possibly a different number of points
@@ -33,7 +35,9 @@ optimal_transport <- function(X,Y, Q= NULL,lambda = .1,eps = .01) {
 
 }
 
-#' Function to find the optimal Q.  Classic Procrustes
+#' Procrustes
+#' @description Function to find the optimal Q.  Classic Procrustes, but with the allowance
+#' of an assignment matrix.
 #' @param X the vectors X
 #' @param Y the vectors Y
 #' @param Pi the matrix of transports
@@ -49,7 +53,8 @@ procrustes <- function(X,Y, Pi = NULL) {
 
 }
 
-#' Function to iterate optimal transport based on sinkhorn divergence, for a fixed
+#' Iterate the optimal transport problem with penalization for different lambda.
+#' @description Function to iterate optimal transport based on sinkhorn divergence, for a fixed
 #' penalization parameter
 #' @param X the n x d matrix of vectors
 #' @param Y the m x d matrix of vectors
@@ -103,7 +108,8 @@ iterative_optimal_transport <-function(X,Y, Q = NULL,lambda = .01,eps = .01,numR
 
 }
 
-#' Function to iterate over a decreasing sequence of lambdas, the penalization parameters.
+#' Match datasets
+#' @description Function to iterate over a decreasing sequence of lambdas, the penalization parameters.
 #' If lambda is big, the function is more concave, so we iterate, starting
 #' from Lambda = .5, and decreasing each time by alpha.
 #' This method takes longer, but is more likely to converge to the true solution,
