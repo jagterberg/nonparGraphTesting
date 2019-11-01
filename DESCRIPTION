@@ -1,4 +1,4 @@
-Package: optimalTransportInvariance
+Package: nonparGraphTesting
 Type: Package
 Title: Solve different-sized otpimal transport problems
 Version: 0.1.0
