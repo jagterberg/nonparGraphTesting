@@ -56,7 +56,7 @@
 #' test <- match_orthogonal(X,Y,sigma=.1,numReps = 50)
 #' test2 <- solve_optimal_transport(X,Y,lambda_init = 1)
 
-match_orthogonal <- function(X,Y,sigma = .1,numReps=100) {
+match_support_entropy <- function(X,Y,sigma = .1,numReps=100) {
   d = dim(X)[2]
   A <- diag(1,d,d)
 

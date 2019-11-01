@@ -1,10 +1,10 @@
 Package: nonparGraphTesting
 Type: Package
-Title: Solve different-sized otpimal transport problems
+Title: Nonparametric Testing for Random Graphs
 Version: 0.1.0
 Author: Joshua Agterberg
 Maintainer: Joshua Agterberg <jagterberg@jhu.edu>
-Description: Solves the optimal transport problem with invariance to orthogonal matrices.
+Description: For two random graphs of different sizes, determine whether they have the same distribution.  Functionally, given graphs A1 and A2, the method first embeds the graphs using the Adjacency Spectral Embedding, and then matches the support of the Adjacency Spectral Embeddings using optimal transport.  
 Encoding: UTF-8
 LazyData: true
 Suggests: knitr, rmarkdown

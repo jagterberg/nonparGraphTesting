@@ -143,7 +143,7 @@ iterative_optimal_transport <-function(X,Y, Q = NULL,lambda = .01,eps = .01,numR
 #' Y <- Y %*% W
 #' test2 <- solve_optimal_transport(X,Y)
 #' norm(test2$`Orthogonal Matrix` - W,"2")
-solve_optimal_transport <- function(X,Y,
+match_support <- function(X,Y,
                   Q = NULL,lambda_init = .5, lambda_final = .0001,alpha = .95,
                   eps = .01,numReps =100) {
 
@@ -159,8 +159,9 @@ solve_optimal_transport <- function(X,Y,
     lambda <- alpha*lambda
   }
 
-  toReturn <- list(Pi,Q)
-  names(toReturn) <- c("Pi", "Orthogonal Matrix")
+  #toReturn <- list(Pi,Q)
+  toReturn <- Q
+  #names(toReturn) <- c("Pi", "Orthogonal Matrix")
   return(toReturn)
 
 }
