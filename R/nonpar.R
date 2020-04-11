@@ -3,11 +3,12 @@
 #' @param B another adjacency matrix
 #' @param d the (known) dimension
 #' @param nsims  the number of permutations to run
+#' @param Q_init initial guess for orthogonal matrix
 #' @export
-nonpar <- function(A,B,d = 5,nsims =100) {
+nonpar <- function(A,B,d = 5,nsims =100,Q_init = NULL) {
   Xhat <- ase(A,d)
   Yhat <- ase(B,d)
-  result <- nonpar.test(Xhat,Yhat,nsims)
+  result <- nonpar.test(Xhat,Yhat,nsims,Q_init = Q_init)
   return(result)
 }
 
@@ -15,13 +16,17 @@ nonpar <- function(A,B,d = 5,nsims =100) {
 #' @param Xhat the embedded first graph
 #' @param Yhat the embedded second graph
 #' @param nsims  the number of permutations to do
+#' @param Q_init initial guess for orthogonal matrix
 #' @export
-nonpar.test <- function(Xhat,Yhat,nsims = 100) {
+nonpar.test <- function(Xhat,Yhat,nsims = 100,Q_init = NULL) {
   #alignment step:
-  Q <- match_support(Xhat, Yhat)
+  Q <- match_support(Xhat, Yhat,Q = Q_init)
   Ynew <- Yhat %*% Q
-  U <- kernel.stat(Xhat, Ynew)
-  testresult <- run_perm_test(U,nsims,Xhat,Ynew)
+  dist.mat <- get_dist_matrix(Xhat,Ynew)
+  i2 <- setdiff( c(1:(2*nrow(Xhat))), c(1:nrow(Xhat)) )
+  U <- kernel.stat(Xhat,Ynew,dist=dist.mat,i1 = c(1:nrow(Xhat)),i2 = i2)
+  #U <- kernel.stat(Xhat, Ynew)
+  testresult <- run_perm_test(U,nsims,Xhat,Ynew,dist.mat = dist.mat)
   return(testresult)
 }
 
@@ -44,6 +49,7 @@ ase <- function(A,d ) {
 #' @param sigma the kernel sigma
 #' @import stats
 #' @return the kernel matrix
+#' @export
 get_dist_matrix <- function(Z1,Z2,sigma = .5) {
   new_dat <- rbind(Z1,Z2)
   D1 <- exp(-(as.matrix(stats::dist(new_dat))^2)/(2*sigma^2))
@@ -54,6 +60,7 @@ get_dist_matrix <- function(Z1,Z2,sigma = .5) {
 #' @param X n x d dataset
 #' @param Y m x dataset
 #' @return pairwise kernel n x m matrix
+#' @export
 rect.dist <- function(X,Y){
   X <- as.matrix(X)
   Y <- as.matrix(Y)
@@ -77,6 +84,7 @@ rect.dist <- function(X,Y){
 #' @param i1 sets of indices of X to run the permutation test
 #' @param i2 sets of indices of X to run the permutation test
 #' @return the kernel statistic evaluated at the specified indices
+#' @export
 kernel.stat <- function(X,Y,sigma=0.5,dist = NULL,i1=c(1:nrow(X)),
                         i2=c((nrow(X) + 1):(nrow(X)*2))){
 
@@ -118,7 +126,9 @@ get_s <- function(X) {
 #' @param Y estimates for latent positions 2
 #' @param dist.mat Optional, a distance matrix precalculated already so as not to recalculate.
 #' If null, the function is recursively run to calculate it
+#' Note: currently the function has a bug if dist.mat is null
 #' @return an estimated p-value under the null.
+#' @export
 run_perm_test <- function(U,nsims,X,Y,dist.mat = NULL) {
   toReturn <- rep(-1.0,nsims)
   for (i in 1:nsims) {
@@ -127,14 +137,10 @@ run_perm_test <- function(U,nsims,X,Y,dist.mat = NULL) {
     indices_2 <- setdiff( c(1:(nrow(X)*2)), indices_1 )
 
     if(is.null(dist.mat)) {
-      Xnew <- X[indices_1,]
-      Ynew <- Y[indices_2,]
-      #sx <- get_s(Xnew)
-      #sy <- get_s(Ynew)
-      Uhat <- kernel.stat(Xnew,Ynew)#/sx,Ynew/sy)
-    } else {
-      Uhat <- kernel.stat(X=X,Y=Y,i1=indices_1,i2=indices_2,dist=dist.mat)
+      dist.mat <- get_dist_matrix(X,Y)
     }
+
+    Uhat <- kernel.stat(X=X,Y=Y,i1=indices_1,i2=indices_2,dist=dist.mat)
     if (Uhat > U) {
       toReturn[i] <- 1.0
     } else {

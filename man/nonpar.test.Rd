@@ -4,7 +4,7 @@
 \alias{nonpar.test}
 \title{actually run the test}
 \usage{
-nonpar.test(Xhat, Yhat, nsims = 100)
+nonpar.test(Xhat, Yhat, nsims = 100, Q_init = NULL)
 }
 \arguments{
 \item{Xhat}{the embedded first graph}
@@ -12,6 +12,8 @@ nonpar.test(Xhat, Yhat, nsims = 100)
 \item{Yhat}{the embedded second graph}
 
 \item{nsims}{the number of permutations to do}
+
+\item{Q_init}{initial guess for orthogonal matrix}
 }
 \description{
 actually run the test

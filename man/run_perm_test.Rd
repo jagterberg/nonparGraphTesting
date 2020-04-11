@@ -18,7 +18,8 @@ run_perm_test(U, nsims, X, Y, dist.mat = NULL)
 \item{Y}{estimates for latent positions 2}
 
 \item{dist.mat}{Optional, a distance matrix precalculated already so as not to recalculate.
-If null, the function is recursively run to calculate it}
+If null, the function is recursively run to calculate it
+Note: currently the function has a bug if dist.mat is null}
 }
 \value{
 an estimated p-value under the null.

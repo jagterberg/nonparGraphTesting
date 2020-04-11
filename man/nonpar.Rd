@@ -4,7 +4,7 @@
 \alias{nonpar}
 \title{Nonparametric Random Graph Testing}
 \usage{
-nonpar(A, B, d = 5, nsims = 100)
+nonpar(A, B, d = 5, nsims = 100, Q_init = NULL)
 }
 \arguments{
 \item{A}{An adjacency matrix}
@@ -14,6 +14,8 @@ nonpar(A, B, d = 5, nsims = 100)
 \item{d}{the (known) dimension}
 
 \item{nsims}{the number of permutations to run}
+
+\item{Q_init}{initial guess for orthogonal matrix}
 }
 \description{
 Nonparametric Random Graph Testing
