@@ -114,7 +114,7 @@ iterative_optimal_transport <-function(X,Y, Q = NULL,lambda = .01,eps = .01,numR
 #' from Lambda = .5, and decreasing each time by alpha.
 #' This method takes longer, but is more likely to converge to the true solution,
 #' since we start from a more concave problem and iteratively solve it by setting
-#' lambda = alpha * lambda, for alpha \in (0,1).
+#' lambda = alpha * lambda, for alpha in (0,1).
 #' @param X an n x d dataset of vectors
 #' @param Y an m x d dataset of vectors
 #' @param Q an initial guess
@@ -130,21 +130,26 @@ iterative_optimal_transport <-function(X,Y, Q = NULL,lambda = .01,eps = .01,numR
 #' @examples
 #' library(rstiefel)
 #'set.seed(2019)
-#' X <- matrix(rnorm(1000,1,.2),ncol= 4)
+#'
+#' X <- matrix(rnorm(100,1,.2),ncol= 4)
 #' Y <- rbind(X,X)
 #' W <- rustiefel(4,4)
 #' Y <- Y %*% W
-#' test <- solve_optimal_transport(X,Y)
-#' norm(test$`Orthogonal Matrix` - W,"2")
+#' test <- match_support(X,Y)
 #'
-#' X <- matrix(rnorm(1000,.2,.02),ncol= 5)
+#' norm(test- W,"2")
+#' # others have pointed out that initializing Q at all 2^d sign matrices ( diagonal matrices
+#'  # whose entries are plus or minus one) might have better global
+#'  # convergence
+#'
+#' X <- matrix(rnorm(100,.2,.02),ncol= 5)
 #' Y <- rbind(X,X)
 #' W <- rustiefel(5,5)
 #' Y <- Y %*% W
-#' test2 <- solve_optimal_transport(X,Y)
-#' norm(test2$`Orthogonal Matrix` - W,"2")
+#' test2 <- match_support(X,Y)
+#' norm(test2 - W,"2")
 match_support <- function(X,Y,
-                  Q = NULL,lambda_init = .5, lambda_final = .0001,alpha = .95,
+                  Q = NULL,lambda_init = .5, lambda_final = .01,alpha = .95,
                   eps = .01,numReps =100) {
 
   lambda <- lambda_init

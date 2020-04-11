@@ -6,6 +6,16 @@
 \usage{
 get_dist_matrix(Z1, Z2, sigma = 0.5)
 }
+\arguments{
+\item{Z1}{the n x d dataset}
+
+\item{Z2}{the m x d dataset}
+
+\item{sigma}{the kernel sigma}
+}
+\value{
+the kernel matrix
+}
 \description{
 Function to get pairwise distances.
 }

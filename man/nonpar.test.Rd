@@ -4,7 +4,14 @@
 \alias{nonpar.test}
 \title{actually run the test}
 \usage{
-nonpar.test(Xhat, Yhat)
+nonpar.test(Xhat, Yhat, nsims = 100)
+}
+\arguments{
+\item{Xhat}{the embedded first graph}
+
+\item{Yhat}{the embedded second graph}
+
+\item{nsims}{the number of permutations to do}
 }
 \description{
 actually run the test

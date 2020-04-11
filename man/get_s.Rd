@@ -2,10 +2,13 @@
 % Please edit documentation in R/nonpar.R
 \name{get_s}
 \alias{get_s}
-\title{Helper function for a normalizing constant.}
+\title{Helper function for a normalizing constant}
 \usage{
 get_s(X)
 }
+\arguments{
+\item{X}{n x d dataset}
+}
 \description{
-Helper function for a normalizing constant.
+Helper function for a normalizing constant
 }

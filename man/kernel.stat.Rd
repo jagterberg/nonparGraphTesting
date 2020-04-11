@@ -9,6 +9,22 @@ Original code by Youngser Park.}
 kernel.stat(X, Y, sigma = 0.5, dist = NULL, i1 = c(1:nrow(X)),
   i2 = c((nrow(X) + 1):(nrow(X) * 2)))
 }
+\arguments{
+\item{X}{n x d datset}
+
+\item{Y}{m x d dataset}
+
+\item{sigma}{for the kernel}
+
+\item{dist}{optional, the precalculated kernel matrix}
+
+\item{i1}{sets of indices of X to run the permutation test}
+
+\item{i2}{sets of indices of X to run the permutation test}
+}
+\value{
+the kernel statistic evaluated at the specified indices
+}
 \description{
 Function to generate the U-statistic given the latent positions X and Y
 and an optional choice of sigma.

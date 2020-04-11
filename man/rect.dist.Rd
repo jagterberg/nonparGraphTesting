@@ -6,6 +6,14 @@
 \usage{
 rect.dist(X, Y)
 }
+\arguments{
+\item{X}{n x d dataset}
+
+\item{Y}{m x dataset}
+}
+\value{
+pairwise kernel n x m matrix
+}
 \description{
 Function to get the distance.  Original code by Youngser Park.
 }

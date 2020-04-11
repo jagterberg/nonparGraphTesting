@@ -11,6 +11,9 @@ ase(A, d)
 
 \item{d}{the known dimension}
 }
+\value{
+adjacency spectral embedding
+}
 \description{
 Compute the Adjacency Spectral embedding
 }

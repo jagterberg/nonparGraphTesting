@@ -9,6 +9,14 @@ Code written in Fall of 2018, so may be buggy}
 run_perm_test(U, nsims, X, Y, dist.mat = NULL)
 }
 \arguments{
+\item{U}{value of null U statistic}
+
+\item{nsims}{number of simulations}
+
+\item{X}{estimates for latent positions 1}
+
+\item{Y}{estimates for latent positions 2}
+
 \item{dist.mat}{Optional, a distance matrix precalculated already so as not to recalculate.
 If null, the function is recursively run to calculate it}
 }

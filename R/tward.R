@@ -20,27 +20,27 @@
 #' Y <- Y %*% W
 #'
 #' #Solve the problem using both max entropy and optimal transport
-#' test <- match_orthogonal(X,Y,numReps = 500)
-#' test2 <- solve_optimal_transport(X,Y,numReps = 50, alpha =.5)
-#' norm(test$`Orthogonal Matrix` - W,"2")
+#' test <- match_support_entropy(X,Y,numReps = 20)
+#' test2 <-match_support(X,Y,numReps = 50, alpha =.5)
+#' norm(test - W,"2")
 #'
-#' X <- matrix(rnorm(1000,.2,.02),ncol= 5)
+#' X <- matrix(rnorm(100,.2,.02),ncol= 5)
 #' Y <- rbind(X,X)
 #' W <- rustiefel(5,5)
 #' Y <- Y %*% W
-#' test <- match_orthogonal(X,Y,numReps = 100)
+#' test <- match_support_entropy(X,Y,numReps = 100)
 #'
-#' test2 <- solve_optimal_transport(X,Y)
-#' norm(test2$`Orthogonal Matrix` - W,"2")
+#' test2 <- match_support(X,Y)
+#' norm(test2 - W,"2")
 #'
 #' set.seed(2018)
-#' X <- matrix(rnorm(1800,1,.1),ncol= 9)
+#' X <- matrix(rnorm(900,1,.1),ncol= 9)
 #' Y <- rbind(X,X)
 #' W <- rustiefel(9,9)
 #' Y <- Y %*% W
-#' test <- match_orthogonal(X,Y,numReps = 50)
-#' test2 <- solve_optimal_transport(X,Y,lambda_init = 4,numReps = 200,Q=W)
-#' norm(test2$`Orthogonal Matrix` - W,"2")
+#' test <- match_support_entropy(X,Y,numReps = 50)
+#' test2 <- match_support(X,Y,lambda_init = 4,numReps = 200,Q=W)
+#' norm(test2 - W,"2")
 #'
 #' D <- 3
 #' N <- 50
@@ -53,9 +53,8 @@
 #' Y = -abs(Y)
 #' sigma = 0.1
 #' niter = 50
-#' test <- match_orthogonal(X,Y,sigma=.1,numReps = 50)
-#' test2 <- solve_optimal_transport(X,Y,lambda_init = 1)
-
+#' test <- match_support_entropy(X,Y,sigma=.1,numReps = 50)
+#' test2 <- match_support(X,Y,lambda_init = 1)
 match_support_entropy <- function(X,Y,sigma = .1,numReps=100) {
   d = dim(X)[2]
   A <- diag(1,d,d)
