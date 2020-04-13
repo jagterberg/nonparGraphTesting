@@ -76,7 +76,7 @@ get_dist_matrix <- function(Z1,Z2,sigma = .5) {
   D2 <- exp(-(as.matrix(stats::dist(Z2))^2)/(2*sigma^2))
   D3 <- exp(-rect.dist(Z1,Z2)/(2*sigma^2))
   i1 <- c(1:nrow(Z1))
-  i2 <- setDiff(c(1:(m+n)),c(1:nrow(Z2)))
+  i2 <- setdiff(c(1:(m+n)),c(1:nrow(Z2)))
   D <- matrix(0,n+m,n+m)
   D[i1,i1] <- D1
   D[i2,i2] <- D2
