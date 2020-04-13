@@ -68,9 +68,20 @@ ase <- function(A,d ) {
 #' @return the kernel matrix
 #' @export
 get_dist_matrix <- function(Z1,Z2,sigma = .5) {
-  new_dat <- rbind(Z1,Z2)
-  D1 <- exp(-(as.matrix(stats::dist(new_dat))^2)/(2*sigma^2))
-  return(D1)
+  #new_dat <- rbind(Z1,Z2)
+  #D1 <- exp(-(as.matrix(stats::dist(new_dat))^2)/(2*sigma^2))
+  m <- nrow(Z2)
+  n <- nrow(Z2)
+  D1 <- exp(-(as.matrix(stats::dist(Z1))^2)/(2*sigma^2))
+  D2 <- exp(-(as.matrix(stats::dist(Z2))^2)/(2*sigma^2))
+  D3 <- exp(-rect.dist(Z1,Z2)/(2*sigma^2))
+  i1 <- c(1:nrow(Z1))
+  i2 <- setDiff(c(1:(m+n)),c(1:nrow(Z2)))
+  D <- matrix(0,n+m,n+m)
+  D[i1,i1] <- D1
+  D[i2,i2] <- D2
+  D[i1,i2] <- D3
+  return(D)
 }
 
 #' Function to get the distance.  Original code by Youngser Park.
