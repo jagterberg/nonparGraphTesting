@@ -38,14 +38,15 @@ lambda = alpha * lambda, for alpha in (0,1).
 \examples{
 library(rstiefel)
 set.seed(2019)
-
 X <- matrix(rnorm(100,1,.2),ncol= 4)
 Y <- rbind(X,X)
+
+
 W <- rustiefel(4,4)
 Y <- Y \%*\% W
 test <- match_support(X,Y)
 
-norm(test- W,"2")
+
 # others have pointed out that initializing Q at all 2^d sign matrices ( diagonal matrices
  # whose entries are plus or minus one) might have better global
  # convergence
@@ -55,5 +56,5 @@ Y <- rbind(X,X)
 W <- rustiefel(5,5)
 Y <- Y \%*\% W
 test2 <- match_support(X,Y)
-norm(test2 - W,"2")
+
 }

@@ -101,8 +101,8 @@ iterative_optimal_transport <-function(X,Y, Q = NULL,lambda = .01,eps = .01,numR
     }
 
   }
-  toReturn <- list(Pi,Q)
-  names(toReturn) <- c("Pi", "Orthogonal Matrix")
+  toReturn <- list(Pi,Q,c)
+  names(toReturn) <- c("Pi", "Orthogonal Matrix","obj.value")
 
   return(toReturn)
 
@@ -130,14 +130,15 @@ iterative_optimal_transport <-function(X,Y, Q = NULL,lambda = .01,eps = .01,numR
 #' @examples
 #' library(rstiefel)
 #'set.seed(2019)
-#'
-#' X <- matrix(rnorm(100,1,.2),ncol= 4)
+#'X <- matrix(rnorm(100,1,.2),ncol= 4)
 #' Y <- rbind(X,X)
+#'
+#'
 #' W <- rustiefel(4,4)
 #' Y <- Y %*% W
 #' test <- match_support(X,Y)
 #'
-#' norm(test- W,"2")
+#'
 #' # others have pointed out that initializing Q at all 2^d sign matrices ( diagonal matrices
 #'  # whose entries are plus or minus one) might have better global
 #'  # convergence
@@ -147,7 +148,7 @@ iterative_optimal_transport <-function(X,Y, Q = NULL,lambda = .01,eps = .01,numR
 #' W <- rustiefel(5,5)
 #' Y <- Y %*% W
 #' test2 <- match_support(X,Y)
-#' norm(test2 - W,"2")
+#'
 match_support <- function(X,Y,
                   Q = NULL,lambda_init = .5, lambda_final = .01,alpha = .95,
                   eps = .01,numReps =100) {
@@ -160,13 +161,14 @@ match_support <- function(X,Y,
   while(lambda > lambda_final) {
     Q <- iterative_optimal_transport(X,Y,Q,lambda = lambda,eps = eps,numReps = numReps)
     Pi <- Q$Pi
+    c <- Q$`obj.value`
     Q <- Q$`Orthogonal Matrix`
     lambda <- alpha*lambda
   }
 
-  #toReturn <- list(Pi,Q)
-  toReturn <- Q
-  #names(toReturn) <- c("Pi", "Orthogonal Matrix")
+  toReturn <- list(Pi,Q,c)
+  #toReturn <- Q
+  names(toReturn) <- c("Pi", "Q","obj.value")
   return(toReturn)
 
 }

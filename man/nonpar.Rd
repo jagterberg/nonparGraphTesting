@@ -2,9 +2,13 @@
 % Please edit documentation in R/nonpar.R
 \name{nonpar}
 \alias{nonpar}
-\title{Nonparametric Random Graph Testing}
+\title{Nonparametric Random Graph Testing
+Wrapper function to take in two graphs and run the nonpar
+test with alignment; however it may be more useful to use nonpar.test
+directly after alignment}
 \usage{
-nonpar(A, B, d = 5, nsims = 100, Q_init = NULL)
+nonpar(A, B, d = 5, nsims = 100, Q_init = NULL, lambda_init = 0.5,
+  lambda_final = 0.01, alpha = 0.5, eps = 0.01, numReps = 20)
 }
 \arguments{
 \item{A}{An adjacency matrix}
@@ -16,7 +20,20 @@ nonpar(A, B, d = 5, nsims = 100, Q_init = NULL)
 \item{nsims}{the number of permutations to run}
 
 \item{Q_init}{initial guess for orthogonal matrix}
+
+\item{lambda_init}{initial value of lambda for regularized sinkhorn problem}
+
+\item{lambda_final}{final value of lambda}
+
+\item{alpha}{decay rate of the lambdas}
+
+\item{eps}{tolerance}
+
+\item{numReps}{reps in the iterative sinkhorn divergence problem}
 }
 \description{
 Nonparametric Random Graph Testing
+Wrapper function to take in two graphs and run the nonpar
+test with alignment; however it may be more useful to use nonpar.test
+directly after alignment
 }

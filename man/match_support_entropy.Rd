@@ -37,7 +37,7 @@ Y <- Y \%*\% W
 #Solve the problem using both max entropy and optimal transport
 test <- match_support_entropy(X,Y,numReps = 20)
 test2 <-match_support(X,Y,numReps = 50, alpha =.5)
-norm(test - W,"2")
+
 
 X <- matrix(rnorm(100,.2,.02),ncol= 5)
 Y <- rbind(X,X)
@@ -46,7 +46,7 @@ Y <- Y \%*\% W
 test <- match_support_entropy(X,Y,numReps = 100)
 
 test2 <- match_support(X,Y)
-norm(test2 - W,"2")
+
 
 set.seed(2018)
 X <- matrix(rnorm(900,1,.1),ncol= 9)
@@ -55,7 +55,7 @@ W <- rustiefel(9,9)
 Y <- Y \%*\% W
 test <- match_support_entropy(X,Y,numReps = 50)
 test2 <- match_support(X,Y,lambda_init = 4,numReps = 200,Q=W)
-norm(test2 - W,"2")
+
 
 D <- 3
 N <- 50

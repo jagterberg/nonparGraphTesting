@@ -1,14 +1,33 @@
 #' Nonparametric Random Graph Testing
+#' Wrapper function to take in two graphs and run the nonpar
+#' test with alignment; however it may be more useful to use nonpar.test
+#' directly after alignment
 #' @param A An adjacency matrix
 #' @param B another adjacency matrix
 #' @param d the (known) dimension
 #' @param nsims  the number of permutations to run
 #' @param Q_init initial guess for orthogonal matrix
+#' @param lambda_init initial value of lambda for regularized sinkhorn problem
+#' @param lambda_final final value of lambda
+#' @param alpha decay rate of the lambdas
+#' @param eps tolerance
+#' @param numReps reps in the iterative sinkhorn divergence problem
 #' @export
-nonpar <- function(A,B,d = 5,nsims =100,Q_init = NULL) {
+nonpar <- function(A,B,d = 5,nsims =100,Q_init = NULL,lambda_init = .5
+                   ,lambda_final = .01,alpha=.5,eps=.01,numReps = 20) {
   Xhat <- ase(A,d)
   Yhat <- ase(B,d)
-  result <- nonpar.test(Xhat,Yhat,nsims,Q_init = Q_init)
+  matched <- match_support(Xhat, Yhat,Q = Q_init
+                           ,lambda_init = lambda_init
+                           ,lambda_final = lambda_final
+                           ,alpha=alpha
+                           ,eps=eps
+                           ,numReps=numReps)
+
+
+
+  Ynew <- Yhat %*% matched$Q
+  result <- nonpar.test(Xhat,Ynew,nsims)
   return(result)
 }
 
@@ -16,17 +35,15 @@ nonpar <- function(A,B,d = 5,nsims =100,Q_init = NULL) {
 #' @param Xhat the embedded first graph
 #' @param Yhat the embedded second graph
 #' @param nsims  the number of permutations to do
-#' @param Q_init initial guess for orthogonal matrix
 #' @export
-nonpar.test <- function(Xhat,Yhat,nsims = 100,Q_init = NULL) {
-  #alignment step:
-  Q <- match_support(Xhat, Yhat,Q = Q_init)
-  Ynew <- Yhat %*% Q
-  dist.mat <- get_dist_matrix(Xhat,Ynew)
+nonpar.test <- function(Xhat,Yhat,nsims = 100) {
+
+
+  dist.mat <- get_dist_matrix(Xhat,Yhat)
   i2 <- setdiff( c(1:(2*nrow(Xhat))), c(1:nrow(Xhat)) )
-  U <- kernel.stat(Xhat,Ynew,dist=dist.mat,i1 = c(1:nrow(Xhat)),i2 = i2)
+  U <- kernel.stat(Xhat,Yhat,dist=dist.mat,i1 = c(1:nrow(Xhat)),i2 = i2)
   #U <- kernel.stat(Xhat, Ynew)
-  testresult <- run_perm_test(U,nsims,Xhat,Ynew,dist.mat = dist.mat)
+  testresult <- run_perm_test(U,nsims,Xhat,Yhat,dist.mat = dist.mat)
   return(testresult)
 }
 
