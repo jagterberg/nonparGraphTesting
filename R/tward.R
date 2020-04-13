@@ -58,10 +58,18 @@
 match_support_entropy <- function(X,Y,sigma = .1,numReps=100) {
   d = dim(X)[2]
   A <- diag(1,d,d)
+  n <- dim(X)[1]
+  m <- dim(Y)[1]
 
   for (it in c(1:numReps)) {
     X <- X%*%A
-    C <- as.matrix(pdist::pdist(X,Y))^2
+
+    tmp1 <- X%*%t(Y)
+    tmp2 <- outer(rep(1, n), rowSums(Y^2))
+    tmp3 <- outer(rowSums(X^2), rep(1,m))
+    C <- tmp2 - 2*tmp1 + tmp3
+
+    #C <- as.matrix(pdist::pdist(X,Y))^2
     K <- exp(-C/(2/sigma^2))
     P <- t(K / rowSums(K))
     Q <-  t(t(K) / colSums(K))

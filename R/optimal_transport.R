@@ -8,7 +8,6 @@
 #' @param Q An orthogonal matrix
 #' @param lambda the parameter to penalize in sinkhorn divergence
 #' @param eps the tolerance
-#' @import pdist
 #' @return P, the n x m matrix of assignments
 #' @export
 optimal_transport <- function(X,Y, Q= NULL,lambda = .1,eps = .01) {
@@ -17,10 +16,17 @@ optimal_transport <- function(X,Y, Q= NULL,lambda = .1,eps = .01) {
     Q <- diag(1,d,d)
   }
   X <- X%*%Q
-  C <- as.matrix(pdist::pdist(X,Y))^2
 
   n <- dim(X)[1]
   m <- dim(Y)[1]
+
+  tmp1 <- X%*%t(Y)
+  tmp2 <- outer(rep(1, n), rowSums(Y^2))
+  tmp3 <- outer(rowSums(X^2), rep(1,m))
+  C <- tmp2 - 2*tmp1 + tmp3
+  #C <- as.matrix(rect.dist(X,Y))^2
+
+
   r <- 1/n
   c <- 1/m
   P <- exp(-lambda * C)
@@ -126,7 +132,6 @@ iterative_optimal_transport <-function(X,Y, Q = NULL,lambda = .01,eps = .01,numR
 #' @param numReps the number of reps for each subiteration
 #' @return a list of the final orthogonal matrix and the assignment matrix
 #' @export
-#' @import pdist
 #' @import rstiefel
 #' @examples
 #' library(rstiefel)
