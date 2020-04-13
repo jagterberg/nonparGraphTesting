@@ -8,6 +8,7 @@
 #' @param Q An orthogonal matrix
 #' @param lambda the parameter to penalize in sinkhorn divergence
 #' @param eps the tolerance
+#' @import pdist
 #' @return P, the n x m matrix of assignments
 #' @export
 optimal_transport <- function(X,Y, Q= NULL,lambda = .1,eps = .01) {
