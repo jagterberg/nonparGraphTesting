@@ -5,7 +5,7 @@
 \title{Match datasets}
 \usage{
 match_support(X, Y, Q = NULL, lambda_init = 0.5, lambda_final = 0.01,
-  alpha = 0.95, eps = 0.01, numReps = 100)
+  alpha = 0.95, eps = 0.01, numReps = 100, eps_OT = 0.01)
 }
 \arguments{
 \item{X}{an n x d dataset of vectors}
@@ -20,9 +20,11 @@ match_support(X, Y, Q = NULL, lambda_init = 0.5, lambda_final = 0.01,
 
 \item{alpha}{the parameter for which lambda is multiplied by}
 
-\item{eps}{the tolerance for the optimal transport problem}
+\item{eps}{the tolerance for the iterative optimal transport problem}
 
 \item{numReps}{the number of reps for each subiteration}
+
+\item{eps_OT}{the tolerance for the individual optimal transport problem}
 }
 \value{
 a list of the final orthogonal matrix and the assignment matrix
@@ -37,24 +39,23 @@ lambda = alpha * lambda, for alpha in (0,1).
 }
 \examples{
 library(rstiefel)
-set.seed(2019)
+set.seed(2030)
 X <- matrix(rnorm(100,1,.2),ncol= 4)
 Y <- rbind(X,X)
-
-
 W <- rustiefel(4,4)
 Y <- Y \%*\% W
-test <- match_support(X,Y)
-
-
+test <- match_support(X,Y,numReps = 10,Q = diag(c(1,-1,-1,1)))
+#cheating a bit by starting with Q with the diagonals equal to
+# the sign of the true matrix
 # others have pointed out that initializing Q at all 2^d sign matrices ( diagonal matrices
  # whose entries are plus or minus one) might have better global
  # convergence
-
+set.seed(2010)
 X <- matrix(rnorm(100,.2,.02),ncol= 5)
 Y <- rbind(X,X)
 W <- rustiefel(5,5)
 Y <- Y \%*\% W
 test2 <- match_support(X,Y)
+norm(test2$Q - W)
 
 }

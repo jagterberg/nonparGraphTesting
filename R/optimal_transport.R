@@ -69,6 +69,7 @@ procrustes <- function(X,Y, Pi = NULL) {
 #' @param lambda the penalization parameter
 #' @param eps tolerance for computing sinkhorn divergence
 #' @param numReps when to stop
+#' @param eps_OT tolerance for the individual optimal transport problem
 #' @return a list of the final Pi and Q
 #' @export
 #' @examples
@@ -87,21 +88,21 @@ procrustes <- function(X,Y, Pi = NULL) {
 #' Y <- matrix(rnorm(200,.7),ncol =5)
 #' test2 <- iterative_optimal_transport(X,Y,numReps = 1000,lambda = .0001)
 #' norm(test2$`Orthogonal Matrix` - W,"2")
-iterative_optimal_transport <-function(X,Y, Q = NULL,lambda = .01,eps = .01,numReps =1000) {
+iterative_optimal_transport <-function(X,Y, Q = NULL,lambda = .01,eps = .01,numReps =1000,eps_OT = .01) {
   if(is.null(Q)) {
     d <- dim(X)[2]
     Q <- diag(1,d,d)
   }
-  Pi <- optimal_transport(X,Y,Q)
+  Pi <- optimal_transport(X,Y,Q,eps = eps_OT,lambda=lambda)
   Q <- procrustes(X,Y,Pi)
   c <- norm(X %*% Q - Pi%*% Y,"F")
   i <- 1
   while ( i < numReps) {
     if( c > eps ) {
 
-      Pi <- optimal_transport(X,Y,Q)
+      Pi <- optimal_transport(X,Y,Q,eps = eps_OT,lambda = lambda)
       Q <- procrustes(X,Y,Pi)
-      c <- norm(X %*% Q - Pi%*% Y)
+      c <- norm(X %*% Q - Pi%*% Y,"F")
       i <- i+1
     } else {
       break
@@ -128,36 +129,36 @@ iterative_optimal_transport <-function(X,Y, Q = NULL,lambda = .01,eps = .01,numR
 #' @param lambda_init the initial value of lambda for penalization
 #' @param lambda_final For termination
 #' @param alpha the parameter for which lambda is multiplied by
-#' @param eps the tolerance for the optimal transport problem
+#' @param eps the tolerance for the iterative optimal transport problem
 #' @param numReps the number of reps for each subiteration
+#' @param eps_OT the tolerance for the individual optimal transport problem
 #' @return a list of the final orthogonal matrix and the assignment matrix
 #' @export
 #' @import rstiefel
 #' @examples
 #' library(rstiefel)
-#'set.seed(2019)
+#'set.seed(2030)
 #'X <- matrix(rnorm(100,1,.2),ncol= 4)
 #' Y <- rbind(X,X)
-#'
-#'
 #' W <- rustiefel(4,4)
 #' Y <- Y %*% W
-#' test <- match_support(X,Y)
-#'
-#'
+#' test <- match_support(X,Y,numReps = 10,Q = diag(c(1,-1,-1,1)))
+#' #cheating a bit by starting with Q with the diagonals equal to
+#' # the sign of the true matrix
 #' # others have pointed out that initializing Q at all 2^d sign matrices ( diagonal matrices
 #'  # whose entries are plus or minus one) might have better global
 #'  # convergence
-#'
+#'set.seed(2010)
 #' X <- matrix(rnorm(100,.2,.02),ncol= 5)
 #' Y <- rbind(X,X)
 #' W <- rustiefel(5,5)
 #' Y <- Y %*% W
 #' test2 <- match_support(X,Y)
+#' norm(test2$Q - W)
 #'
 match_support <- function(X,Y,
                   Q = NULL,lambda_init = .5, lambda_final = .01,alpha = .95,
-                  eps = .01,numReps =100) {
+                  eps = .01,numReps =100,eps_OT = .01) {
 
   lambda <- lambda_init
   if (is.null(Q)) {
@@ -165,7 +166,7 @@ match_support <- function(X,Y,
     Q <- diag(1,d,d)
   }
   while(lambda > lambda_final) {
-    Q <- iterative_optimal_transport(X,Y,Q,lambda = lambda,eps = eps,numReps = numReps)
+    Q <- iterative_optimal_transport(X,Y,Q,lambda = lambda,eps = eps,numReps = numReps,eps_OT = eps_OT)
     Pi <- Q$Pi
     c <- Q$`obj.value`
     Q <- Q$`Orthogonal Matrix`

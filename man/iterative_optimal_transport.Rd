@@ -5,7 +5,7 @@
 \title{Iterate the optimal transport problem with penalization for different lambda.}
 \usage{
 iterative_optimal_transport(X, Y, Q = NULL, lambda = 0.01,
-  eps = 0.01, numReps = 1000)
+  eps = 0.01, numReps = 1000, eps_OT = 0.01)
 }
 \arguments{
 \item{X}{the n x d matrix of vectors}
@@ -19,6 +19,8 @@ iterative_optimal_transport(X, Y, Q = NULL, lambda = 0.01,
 \item{eps}{tolerance for computing sinkhorn divergence}
 
 \item{numReps}{when to stop}
+
+\item{eps_OT}{tolerance for the individual optimal transport problem}
 }
 \value{
 a list of the final Pi and Q
