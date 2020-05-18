@@ -40,7 +40,7 @@ nonpar.test <- function(Xhat,Yhat,nsims = 100) {
 
 
   dist.mat <- get_dist_matrix(Xhat,Yhat)
-  i2 <- setdiff( c(1:(2*nrow(Xhat))), c(1:nrow(Xhat)) )
+  i2 <- setdiff( c(1:(nrow(Xhat) + nrow(Yhat))), c(1:nrow(Xhat)) )
   U <- kernel.stat(Xhat,Yhat,dist=dist.mat,i1 = c(1:nrow(Xhat)),i2 = i2)
   #U <- kernel.stat(Xhat, Ynew)
   testresult <- run_perm_test(U,nsims,Xhat,Yhat,dist.mat = dist.mat)
@@ -71,7 +71,7 @@ get_dist_matrix <- function(Z1,Z2,sigma = .5) {
   #new_dat <- rbind(Z1,Z2)
   #D1 <- exp(-(as.matrix(stats::dist(new_dat))^2)/(2*sigma^2))
   m <- nrow(Z2)
-  n <- nrow(Z2)
+  n <- nrow(Z1)
   D1 <- exp(-(as.matrix(stats::dist(Z1))^2)/(2*sigma^2))
   D2 <- exp(-(as.matrix(stats::dist(Z2))^2)/(2*sigma^2))
   D3 <- exp(-rect.dist(Z1,Z2)/(2*sigma^2))
@@ -159,10 +159,12 @@ get_s <- function(X) {
 #' @export
 run_perm_test <- function(U,nsims,X,Y,dist.mat = NULL) {
   toReturn <- rep(-1.0,nsims)
+  m <- nrow(X)
+  n <- nrow(Y)
   for (i in 1:nsims) {
     #cat(i," out of ",nsims,"\r")
-    indices_1 <- sample(c(1:(nrow(X)*2)),size=nrow(X),replace = FALSE)
-    indices_2 <- setdiff( c(1:(nrow(X)*2)), indices_1 )
+    indices_1 <- sample(c(1:(m + n)),size=n,replace = FALSE)
+    indices_2 <- setdiff( c(1:(m+n)), indices_1 )
 
     if(is.null(dist.mat)) {
       dist.mat <- get_dist_matrix(X,Y)
