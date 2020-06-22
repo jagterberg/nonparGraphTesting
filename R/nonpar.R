@@ -76,7 +76,7 @@ get_dist_matrix <- function(Z1,Z2,sigma = .5) {
   D2 <- exp(-(as.matrix(stats::dist(Z2))^2)/(2*sigma^2))
   D3 <- exp(-rect.dist(Z1,Z2)/(2*sigma^2))
   i1 <- c(1:nrow(Z1))
-  i2 <- setdiff(c(1:(m+n)),c(1:nrow(Z2)))
+  i2 <- setdiff(c(1:(m+n)),c(1:nrow(Z1)))
   D <- matrix(0,n+m,n+m)
   D[i1,i1] <- D1
   D[i2,i2] <- D2
@@ -120,16 +120,16 @@ kernel.stat <- function(X,Y,sigma=0.5,dist = NULL,i1=c(1:nrow(X)),
   m <- nrow(Y)
 
   if (is.null(dist)) {
-    tmpXX <- sum(exp(-(as.matrix(stats::dist(X))^2)/(2*sigma^2)))
-    tmpYY <- sum(exp(-(as.matrix(stats::dist(Y))^2)/(2*sigma^2)))
+    tmpXX <- sum(exp(-(as.matrix(stats::dist(X))^2)/(2*sigma^2))) - n
+    tmpYY <- sum(exp(-(as.matrix(stats::dist(Y))^2)/(2*sigma^2))) - m
     tmpXY <- sum(exp(-(rect.dist(X,Y))/(2*sigma^2)))
 
     tmp <- tmpXX/(n*(n-1)) + tmpYY/(m*(m-1)) - 2*tmpXY/(m*n)
 
     return((m+n)*tmp)
   } else {
-    tmpXX <- sum(dist[i1,i1])
-    tmpYY <-  sum(dist[i2,i2])
+    tmpXX <- sum(dist[i1,i1]) - n
+    tmpYY <-  sum(dist[i2,i2]) - m
     tmpXY <- sum(dist[i1,i2])
     tmp<- tmpXX /(n*(n-1)) +tmpYY/(m*(m-1)) - 2*tmpXY/(m*n)
     return((m+n)*tmp)
