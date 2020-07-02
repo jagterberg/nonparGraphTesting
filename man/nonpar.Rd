@@ -8,7 +8,8 @@ test with alignment; however it may be more useful to use nonpar.test
 directly after alignment}
 \usage{
 nonpar(A, B, d = 5, nsims = 100, Q_init = NULL, lambda_init = 0.5,
-  lambda_final = 0.01, alpha = 0.5, eps = 0.01, numReps = 20)
+  lambda_final = 0.01, alpha = 0.5, eps = 0.01, numReps = 20,
+  match = FALSE, p.val = TRUE)
 }
 \arguments{
 \item{A}{An adjacency matrix}
@@ -30,6 +31,11 @@ nonpar(A, B, d = 5, nsims = 100, Q_init = NULL, lambda_init = 0.5,
 \item{eps}{tolerance}
 
 \item{numReps}{reps in the iterative sinkhorn divergence problem}
+
+\item{match}{If true, run a optimal-transport procrustes}
+
+\item{p.val}{if TRUE, return estimated p.value.  Otherwise, return vector of permuted test
+statistics}
 }
 \description{
 Nonparametric Random Graph Testing
