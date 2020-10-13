@@ -7,7 +7,7 @@ and an optional choice of sigma.
 Original code by Youngser Park.}
 \usage{
 kernel.stat(X, Y, sigma = 0.5, dist = NULL, i1 = c(1:nrow(X)),
-  i2 = c((nrow(X) + 1):(nrow(X) * 2)))
+  i2 = c((nrow(X) + 1):(nrow(X) + nrow(Y))))
 }
 \arguments{
 \item{X}{n x d datset}

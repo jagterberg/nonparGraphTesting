@@ -8,8 +8,8 @@ test with alignment; however it may be more useful to use nonpar.test
 directly after alignment}
 \usage{
 nonpar(A, B, d = 5, nsims = 100, Q_init = NULL, lambda_init = 0.5,
-  lambda_final = 0.01, alpha = 0.5, eps = 0.01, numReps = 20,
-  match = FALSE, p.val = TRUE)
+  lambda_final = 0.01, eta = 0.5, eps = 0.01, numReps = 20,
+  match = FALSE, alpha = 0.05)
 }
 \arguments{
 \item{A}{An adjacency matrix}
@@ -26,7 +26,7 @@ nonpar(A, B, d = 5, nsims = 100, Q_init = NULL, lambda_init = 0.5,
 
 \item{lambda_final}{final value of lambda}
 
-\item{alpha}{decay rate of the lambdas}
+\item{eta}{decay rate of the lambdas}
 
 \item{eps}{tolerance}
 
@@ -34,8 +34,7 @@ nonpar(A, B, d = 5, nsims = 100, Q_init = NULL, lambda_init = 0.5,
 
 \item{match}{If true, run a optimal-transport procrustes}
 
-\item{p.val}{if TRUE, return estimated p.value.  Otherwise, return vector of permuted test
-statistics}
+\item{alpha}{the type one error}
 }
 \description{
 Nonparametric Random Graph Testing

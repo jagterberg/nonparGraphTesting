@@ -4,7 +4,7 @@
 \alias{nonpar.test}
 \title{actually run the test}
 \usage{
-nonpar.test(Xhat, Yhat, nsims = 100, p.val = TRUE)
+nonpar.test(Xhat, Yhat, nsims = 100, alpha = 0.05)
 }
 \arguments{
 \item{Xhat}{the embedded first graph}
@@ -13,8 +13,7 @@ nonpar.test(Xhat, Yhat, nsims = 100, p.val = TRUE)
 
 \item{nsims}{the number of permutations to do}
 
-\item{p.val}{if TRUE, return estimated p.value.  Otherwise, return vector of permuted test
-statistics}
+\item{alpha}{the rejection type 1 error}
 }
 \description{
 actually run the test

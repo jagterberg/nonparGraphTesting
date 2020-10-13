@@ -48,14 +48,31 @@ optimal_transport <- function(X,Y, Q= NULL,lambda = .1,eps = .01) {
 #' @param X the vectors X
 #' @param Y the vectors Y
 #' @param Pi the matrix of transports
+#' @param p the dimension of the positive component
+#' @param q the dimension of the negative component
+#' @import Matrix
 #' @export
 #' @return the procrustes solution
-procrustes <- function(X,Y, Pi = NULL) {
+procrustes <- function(X,Y, Pi = NULL,p = dim(X)[2],q=0) {
   if (is.null(Pi)) {
     stop("need to run optimal transport first")
   }
-  vals <- svd(t(X)%*% Pi %*% Y)
-  toReturn <- vals$u %*% t(vals$v)
+  if(q == 0) {
+    vals <- svd(t(X)%*% Pi %*% Y)
+    toReturn <- vals$u %*% t(vals$v)
+  } else {
+    Xp <- X[,c(1:p)]
+    Yp <- Y[,c(1:p)]
+    Xq <- X[,c((p+1):(p+q))]
+    Yq <- Y[,c((p+1):(p+q))]
+    valsp <- svd(t(Xp)%*% Pi %*% Yp)
+    valsp <- valsp$u %*% t(valsp$v)
+    valsq <- svd(t(Xq)%*% Pi %*% Yq)
+    valsq <- valsq$u %*% t(valsq$v)
+    toReturn <- Matrix::bdiag(valsp,valsq)
+  }
+
+
   return(toReturn)
 
 }
@@ -70,6 +87,8 @@ procrustes <- function(X,Y, Pi = NULL) {
 #' @param eps tolerance for computing sinkhorn divergence
 #' @param numReps when to stop
 #' @param eps_OT tolerance for the individual optimal transport problem
+#' @param p the dimension of the positive component
+#' @param q the dimension of the negative component
 #' @return a list of the final Pi and Q
 #' @export
 #' @examples
@@ -80,28 +99,32 @@ procrustes <- function(X,Y, Pi = NULL) {
 #' W <- rustiefel(4,4)
 #' Y <- Y %*% W
 #' test <- iterative_optimal_transport(X,Y,numReps = 1000,lambda = .0001)
-#' norm(test$`Orthogonal Matrix` - W,"2")
+#' norm(test$Q - W,"2")
 #' X <- matrix(rnorm(5000,.2,.02),ncol= 5)
 #' Y <- rbind(X,X)
 #' W <- rustiefel(5,5)
 #' Y <- Y %*% W
 #' Y <- matrix(rnorm(200,.7),ncol =5)
 #' test2 <- iterative_optimal_transport(X,Y,numReps = 1000,lambda = .0001)
-#' norm(test2$`Orthogonal Matrix` - W,"2")
-iterative_optimal_transport <-function(X,Y, Q = NULL,lambda = .01,eps = .01,numReps =1000,eps_OT = .01) {
+#' norm(test2$Q - W,"2")
+iterative_optimal_transport <-function(X,Y, Q = NULL,
+                                        lambda = .01,eps = .01,
+                                        numReps =1000,eps_OT = .01
+
+                                        ,p = dim(X)[2],q=0) {
   if(is.null(Q)) {
     d <- dim(X)[2]
     Q <- diag(1,d,d)
   }
   Pi <- optimal_transport(X,Y,Q,eps = eps_OT,lambda=lambda)
-  Q <- procrustes(X,Y,Pi)
+  Q <- procrustes(X,Y,Pi,p,q)
   c <- norm(X %*% Q - Pi%*% Y,"F")
   i <- 1
   while ( i < numReps) {
     if( c > eps ) {
 
       Pi <- optimal_transport(X,Y,Q,eps = eps_OT,lambda = lambda)
-      Q <- procrustes(X,Y,Pi)
+      Q <- procrustes(X,Y,Pi,p,q)
       c <- norm(X %*% Q - Pi%*% Y,"F")
       i <- i+1
     } else {
@@ -110,7 +133,7 @@ iterative_optimal_transport <-function(X,Y, Q = NULL,lambda = .01,eps = .01,numR
 
   }
   toReturn <- list(Pi,Q,c)
-  names(toReturn) <- c("Pi", "Orthogonal Matrix","obj.value")
+  names(toReturn) <- c("Pi", "Q","obj.value")
 
   return(toReturn)
 
@@ -128,6 +151,8 @@ iterative_optimal_transport <-function(X,Y, Q = NULL,lambda = .01,eps = .01,numR
 #' @param Q an initial guess
 #' @param lambda_init the initial value of lambda for penalization
 #' @param lambda_final For termination
+#' @param p the dimension of the positive component
+#' @param q the dimension of the negative component
 #' @param alpha the parameter for which lambda is multiplied by
 #' @param eps the tolerance for the iterative optimal transport problem
 #' @param numReps the number of reps for each subiteration
@@ -157,8 +182,8 @@ iterative_optimal_transport <-function(X,Y, Q = NULL,lambda = .01,eps = .01,numR
 #' norm(test2$Q - W)
 #'
 match_support <- function(X,Y,
-                  Q = NULL,lambda_init = .5, lambda_final = .01,alpha = .95,
-                  eps = .01,numReps =100,eps_OT = .01) {
+                           Q = NULL,lambda_init = .5, lambda_final = .01,alpha = .95,
+                           eps = .01,numReps =100,eps_OT = .01,p = dim(X)[2],q=0) {
 
   lambda <- lambda_init
   if (is.null(Q)) {
@@ -169,7 +194,7 @@ match_support <- function(X,Y,
     Q <- iterative_optimal_transport(X,Y,Q,lambda = lambda,eps = eps,numReps = numReps,eps_OT = eps_OT)
     Pi <- Q$Pi
     c <- Q$`obj.value`
-    Q <- Q$`Orthogonal Matrix`
+    Q <- Q$Q
     lambda <- alpha*lambda
   }
 
@@ -179,8 +204,3 @@ match_support <- function(X,Y,
   return(toReturn)
 
 }
-
-
-
-
-

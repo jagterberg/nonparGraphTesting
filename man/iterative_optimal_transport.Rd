@@ -5,7 +5,8 @@
 \title{Iterate the optimal transport problem with penalization for different lambda.}
 \usage{
 iterative_optimal_transport(X, Y, Q = NULL, lambda = 0.01,
-  eps = 0.01, numReps = 1000, eps_OT = 0.01)
+  eps = 0.01, numReps = 1000, eps_OT = 0.01, p = dim(X)[2],
+  q = 0)
 }
 \arguments{
 \item{X}{the n x d matrix of vectors}
@@ -21,6 +22,10 @@ iterative_optimal_transport(X, Y, Q = NULL, lambda = 0.01,
 \item{numReps}{when to stop}
 
 \item{eps_OT}{tolerance for the individual optimal transport problem}
+
+\item{p}{the dimension of the positive component}
+
+\item{q}{the dimension of the negative component}
 }
 \value{
 a list of the final Pi and Q
@@ -37,12 +42,12 @@ Y <- rbind(X,X)
 W <- rustiefel(4,4)
 Y <- Y \%*\% W
 test <- iterative_optimal_transport(X,Y,numReps = 1000,lambda = .0001)
-norm(test$`Orthogonal Matrix` - W,"2")
+norm(test$Q - W,"2")
 X <- matrix(rnorm(5000,.2,.02),ncol= 5)
 Y <- rbind(X,X)
 W <- rustiefel(5,5)
 Y <- Y \%*\% W
 Y <- matrix(rnorm(200,.7),ncol =5)
 test2 <- iterative_optimal_transport(X,Y,numReps = 1000,lambda = .0001)
-norm(test2$`Orthogonal Matrix` - W,"2")
+norm(test2$Q - W,"2")
 }

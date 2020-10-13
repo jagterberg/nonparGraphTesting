@@ -9,22 +9,21 @@
 #' @param Q_init initial guess for orthogonal matrix
 #' @param lambda_init initial value of lambda for regularized sinkhorn problem
 #' @param lambda_final final value of lambda
-#' @param alpha decay rate of the lambdas
+#' @param eta decay rate of the lambdas
 #' @param eps tolerance
 #' @param numReps reps in the iterative sinkhorn divergence problem
-#' @param p.val if TRUE, return estimated p.value.  Otherwise, return vector of permuted test
-#' statistics
+#' @param alpha the type one error
 #' @param match If true, run a optimal-transport procrustes
 #' @export
 nonpar <- function(A,B,d = 5,nsims =100,Q_init = NULL,lambda_init = .5
-                   ,lambda_final = .01,alpha=.5,eps=.01,numReps = 20,match = FALSE,p.val = TRUE) {
+                   ,lambda_final = .01,eta=.5,eps=.01,numReps = 20,match = FALSE,alpha=.05) {
   Xhat <- ase(A,d)
   Yhat <- ase(B,d)
   if(match) {
     matched <- match_support(Xhat, Yhat,Q = Q_init
                              ,lambda_init = lambda_init
                              ,lambda_final = lambda_final
-                             ,alpha=alpha
+                             ,alpha=eta
                              ,eps=eps
                              ,numReps=numReps)
     Ynew <- Yhat %*% matched$Q
@@ -32,7 +31,7 @@ nonpar <- function(A,B,d = 5,nsims =100,Q_init = NULL,lambda_init = .5
     Ynew <- Yhat
   }
 
-  result <- nonpar.test(Xhat,Ynew,nsims,p.val = p.val)
+  result <- nonpar.test(Xhat,Ynew,nsims,alpha=alpha)
   return(result)
 }
 
@@ -40,17 +39,16 @@ nonpar <- function(A,B,d = 5,nsims =100,Q_init = NULL,lambda_init = .5
 #' @param Xhat the embedded first graph
 #' @param Yhat the embedded second graph
 #' @param nsims  the number of permutations to do
-#' @param p.val if TRUE, return estimated p.value.  Otherwise, return vector of permuted test
-#' statistics
+#' @param alpha the rejection type 1 error
 #' @export
-nonpar.test <- function(Xhat,Yhat,nsims = 100,p.val= TRUE) {
+nonpar.test <- function(Xhat,Yhat,nsims = 100,alpha = .05) {
 
 
   dist.mat <- get_dist_matrix(Xhat,Yhat)
   i2 <- setdiff( c(1:(nrow(Xhat) + nrow(Yhat))), c(1:nrow(Xhat)) )
   U <- kernel.stat(Xhat,Yhat,dist=dist.mat,i1 = c(1:nrow(Xhat)),i2 = i2)
   #U <- kernel.stat(Xhat, Ynew)
-  testresult <- run_perm_test(U,nsims,Xhat,Yhat,dist.mat = dist.mat,p.val)
+  testresult <- run_perm_test(U,nsims,Xhat,Yhat,dist.mat = dist.mat,alpha=alpha)
   return(testresult)
 }
 
@@ -88,6 +86,7 @@ get_dist_matrix <- function(Z1,Z2,sigma = .5) {
   D[i1,i1] <- D1
   D[i2,i2] <- D2
   D[i1,i2] <- D3
+  D[i2,i1] <- t(D3)
   return(D)
 }
 
@@ -105,7 +104,7 @@ rect.dist <- function(X,Y){
   tmp2 <- outer(rep(1, n), rowSums(Y^2))
   tmp3 <- outer(rowSums(X^2), rep(1,m))
   D <- tmp2 - 2*tmp1 + tmp3
-  D <- exp(-D/(2*(.5^2)))
+  #D <- exp(-D/(2*(.5^2)))
   return(D)
 }
 
@@ -121,7 +120,7 @@ rect.dist <- function(X,Y){
 #' @return the kernel statistic evaluated at the specified indices
 #' @export
 kernel.stat <- function(X,Y,sigma=0.5,dist = NULL,i1=c(1:nrow(X)),
-                        i2=c((nrow(X) + 1):(nrow(X)*2))){
+                        i2=c((nrow(X) + 1):(nrow(X)+nrow(Y)))){
 
   n <- nrow(X)
   m <- nrow(Y)
@@ -161,15 +160,16 @@ get_s <- function(X) {
 #' @param Y estimates for latent positions 2
 #' @param dist.mat Optional, a distance matrix precalculated already so as not to recalculate.
 #' If null, the function is recursively run to calculate it
-#' Note: currently the function has a bug if dist.mat is null
-#' @param p.val if TRUE, return estimated p.value.  Otherwise, return vector of permuted test
-#' statistics
+#' @param alpha the rejection level
 #' @return either an estimated p-value under the null or the vector of permuted test statistics
 #' @export
-run_perm_test <- function(U,nsims,X,Y,dist.mat = NULL,p.val = FALSE) {
+run_perm_test <- function(U,nsims,X,Y,dist.mat = NULL,alpha = .05) {
   toReturn <- rep(-1.0,nsims)
   m <- nrow(X)
   n <- nrow(Y)
+
+
+
   for (i in 1:nsims) {
     #cat(i," out of ",nsims,"\r")
     indices_1 <- sample(c(1:(m + n)),size=n,replace = FALSE)
@@ -180,20 +180,30 @@ run_perm_test <- function(U,nsims,X,Y,dist.mat = NULL,p.val = FALSE) {
     }
 
     Uhat <- kernel.stat(X=X,Y=Y,i1=indices_1,i2=indices_2,dist=dist.mat)
-    if (!p.val) {
-      toReturn[i] <- Uhat
-    } else {
-      if (Uhat > U) {
-        toReturn[i] <- 1.0
-      } else {
-        toReturn[i] <- 0.0
-      }
-    }
+    #if (!p.val) {
+    toReturn[i] <- Uhat
+    #} else {
+    #  if (Uhat > U) {
+    #    toReturn[i] <- 1.0
+    #  } else {
+    #    toReturn[i] <- 0.0
+    #  }
+    #}
+
 
   }
 
-  final_return <- list(toReturn,U)
-  names(final_return) <- c("permutation_results","critical_value")
+  crit_val <- sort(toReturn)[floor(alpha*length(toReturn))]
+  if (U < crit_val) {
+    reject <- "reject the null"
+  } else {
+    reject <- "do not reject the null"
+  }
+
+  pval <- sum(toReturn < U)/nsims
+
+  final_return <- list(toReturn,reject,crit_val,U,pval)
+  names(final_return) <- c("permutation_results","reject","critical_value","test statistic","estimated p-value")
   return(final_return)
 
 }

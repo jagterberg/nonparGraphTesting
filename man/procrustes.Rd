@@ -4,7 +4,7 @@
 \alias{procrustes}
 \title{Procrustes}
 \usage{
-procrustes(X, Y, Pi = NULL)
+procrustes(X, Y, Pi = NULL, p = dim(X)[2], q = 0)
 }
 \arguments{
 \item{X}{the vectors X}
@@ -12,6 +12,10 @@ procrustes(X, Y, Pi = NULL)
 \item{Y}{the vectors Y}
 
 \item{Pi}{the matrix of transports}
+
+\item{p}{the dimension of the positive component}
+
+\item{q}{the dimension of the negative component}
 }
 \value{
 the procrustes solution

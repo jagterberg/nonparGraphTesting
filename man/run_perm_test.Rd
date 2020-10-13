@@ -6,7 +6,7 @@
 the number of repetitions, and the estimated latent positions
 Code written in Fall of 2018, so may be buggy}
 \usage{
-run_perm_test(U, nsims, X, Y, dist.mat = NULL, p.val = FALSE)
+run_perm_test(U, nsims, X, Y, dist.mat = NULL, alpha = 0.05)
 }
 \arguments{
 \item{U}{value of null U statistic}
@@ -18,11 +18,9 @@ run_perm_test(U, nsims, X, Y, dist.mat = NULL, p.val = FALSE)
 \item{Y}{estimates for latent positions 2}
 
 \item{dist.mat}{Optional, a distance matrix precalculated already so as not to recalculate.
-If null, the function is recursively run to calculate it
-Note: currently the function has a bug if dist.mat is null}
+If null, the function is recursively run to calculate it}
 
-\item{p.val}{if TRUE, return estimated p.value.  Otherwise, return vector of permuted test
-statistics}
+\item{alpha}{the rejection level}
 }
 \value{
 either an estimated p-value under the null or the vector of permuted test statistics

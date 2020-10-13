@@ -5,7 +5,8 @@
 \title{Match datasets}
 \usage{
 match_support(X, Y, Q = NULL, lambda_init = 0.5, lambda_final = 0.01,
-  alpha = 0.95, eps = 0.01, numReps = 100, eps_OT = 0.01)
+  alpha = 0.95, eps = 0.01, numReps = 100, eps_OT = 0.01,
+  p = dim(X)[2], q = 0)
 }
 \arguments{
 \item{X}{an n x d dataset of vectors}
@@ -25,6 +26,10 @@ match_support(X, Y, Q = NULL, lambda_init = 0.5, lambda_final = 0.01,
 \item{numReps}{the number of reps for each subiteration}
 
 \item{eps_OT}{the tolerance for the individual optimal transport problem}
+
+\item{p}{the dimension of the positive component}
+
+\item{q}{the dimension of the negative component}
 }
 \value{
 a list of the final orthogonal matrix and the assignment matrix
