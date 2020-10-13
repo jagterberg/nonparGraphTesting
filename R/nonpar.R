@@ -193,14 +193,14 @@ run_perm_test <- function(U,nsims,X,Y,dist.mat = NULL,alpha = .05) {
 
   }
 
-  crit_val <- sort(toReturn)[floor(alpha*length(toReturn))]
-  if (U < crit_val) {
+  crit_val <- sort(toReturn)[floor((1-alpha)*length(toReturn))]
+  if (U > crit_val) {
     reject <- "reject the null"
   } else {
     reject <- "do not reject the null"
   }
 
-  pval <- sum(toReturn < U)/nsims
+  pval <- sum(toReturn > U)/nsims
 
   final_return <- list(toReturn,reject,crit_val,U,pval)
   names(final_return) <- c("permutation_results","reject","critical_value","test statistic","estimated p-value")
