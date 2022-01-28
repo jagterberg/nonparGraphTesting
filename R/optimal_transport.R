@@ -298,15 +298,15 @@ match_support_med <-function(X,Y,Q = NULL,lambda_init = .5, lambda_final = .01,
   meds1 <- rep(0,d)
 
   for ( dim in c(1:d)) {
-    meds1[dim] <- sign(median(X[,dim]))
+    meds1[dim] <- median(X[,dim])
   }
 
   meds2 <- rep(0,d)
   for ( dim in c(1:d)) {
-    meds2[dim] <- sign(median(Y[,dim]))
+    meds2[dim] <- median(Y[,dim])
   }
 
-  Q_median <- diag(meds1*meds2)
+  Q_median <- diag(sign(meds1*meds2))
 
   #get the median:
   get_matched <- match_support(X = X,Y = Y,lambda_init = lambda_init,
