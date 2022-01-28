@@ -295,16 +295,24 @@ match_support_med <-function(X,Y,Q = NULL,lambda_init = .5, lambda_final = .01,
 
   d <- dim(X)[2]
 
-  meds <- rep(0,d)
-  for (dim in c(1:d)) {
-    meds[i] <- sign(median(Y[,dim]))
+  meds1 <- rep(0,d)
+
+  for ( dim in c(1:d)) {
+    meds1[dim] <- sign(median(X[,dim]))
   }
+
+  meds2 <- rep(0,d)
+  for ( dim in c(1:d)) {
+    meds2[i] <- sign(median(Y[,dim]))
+  }
+
+  Q_median <- diag(meds1*meds2)
+
   #get the median:
-  Q_init <- diag(meds)
   get_matched <- match_support(X = X,Y = Y,lambda_init = lambda_init,
                                       lambda_fina= lambda_final,eps = eps,
                                       numReps = numReps,eps_OT = eps_OT,
-                                      alpha = alpha,Q = Q_init,
+                                      alpha = alpha,Q = Q_median,
                                       p=p,q=q)
 
   return(get_matched)
