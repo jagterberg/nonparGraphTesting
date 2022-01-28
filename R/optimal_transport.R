@@ -243,15 +243,16 @@ match_support_min <-function(X,Y,Q = NULL,lambda_init = .5, lambda_final = .01,
   get_matched <- list()
 
   #iterate over all sign matrices using match_support():
-  for ( i in c(1:length(signs))) {
-    currentsign <- diag(signs[[i]])
+  for ( i in c(1:nrow(signs))) {
+    print(paste("trying sign",i," of ", 2^d))
+    currentsign <- diag(signs[i,])
     get_matched[[i]] <- match_support(X = X,Y = Y,lambda_init = lambda_init,
                                         lambda_fina= lambda_final,eps = eps,
                                         numReps = numReps,eps_OT = eps_OT,
                                         alpha = alpha,Q = currentsign,
-                                        numReps = 10,p=p,q=q)
+                                        p=p,q=q)
     costs_obj[i] <-  get_matched[[i]]$obj.value
-    costs_kernel[i] <- kernel.stat(Xhat%*% get_matched_1[[i]]$Q,Yhat)
+    costs_kernel[i] <- kernel.stat(Xhat%*% get_matched[[i]]$Q,Yhat)
   }
 
   #find the smallest cost value and return the corresponding result
