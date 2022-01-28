@@ -303,7 +303,7 @@ match_support_med <-function(X,Y,Q = NULL,lambda_init = .5, lambda_final = .01,
 
   meds2 <- rep(0,d)
   for ( dim in c(1:d)) {
-    meds2[i] <- sign(median(Y[,dim]))
+    meds2[dim] <- sign(median(Y[,dim]))
   }
 
   Q_median <- diag(meds1*meds2)
