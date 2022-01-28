@@ -267,3 +267,46 @@ match_support_min <-function(X,Y,Q = NULL,lambda_init = .5, lambda_final = .01,
   return(final)
 
 }
+
+#' minimize over all possible orthogonal matrices
+#'
+#'#' Match datasets
+#' @description find the orthogonal matrix according to the initialization via
+#' the median sign flip heuristic
+#' @param X an n x d dataset of vectors
+#' @param Y an m x d dataset of vectors
+#' @param Q an initial guess
+#' @param lambda_init the initial value of lambda for penalization
+#' @param lambda_final For termination
+#' @param p the dimension of the positive component
+#' @param q the dimension of the negative component
+#' @param alpha the parameter for which lambda is multiplied by
+#' @param eps the tolerance for the iterative optimal transport problem
+#' @param numReps the number of reps for each subiteration
+#' @param eps_OT the tolerance for the individual optimal transport problem
+#' @param costType one of "kernel", "obj.value", or "both", to determine the
+#' minimum cost
+#' @return a list of the final orthogonal matrix and the assignment matrix
+#' @export
+#' @import rstiefel
+match_support_med <-function(X,Y,Q = NULL,lambda_init = .5, lambda_final = .01,
+                             alpha = .95,eps = .01,numReps =100,eps_OT = .01,
+                             p = dim(X)[2],q=0,costType = "kernel") {
+
+  d <- dim(X)[2]
+
+  meds <- rep(0,d)
+  for (dim in c(1:d)) {
+    meds[i] <- sign(median(Y[,dim]))
+  }
+  #get the median:
+  Q_init <- diag(meds)
+  get_matched <- match_support(X = X,Y = Y,lambda_init = lambda_init,
+                                      lambda_fina= lambda_final,eps = eps,
+                                      numReps = numReps,eps_OT = eps_OT,
+                                      alpha = alpha,Q = Q_init,
+                                      p=p,q=q)
+
+  return(get_matched)
+}
+
