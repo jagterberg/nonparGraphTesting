@@ -19,7 +19,7 @@ nonpar <- function(A,B,d = 5,nsims =100,Q_init = NULL,lambda_init = .5
                    ,lambda_final = .01,eta=.5,eps=.01,numReps = 20,match = FALSE,alpha=.05) {
   Xhat <- ase(A,d)
   Yhat <- ase(B,d)
-  if(match) {
+  if(match) { #todo: add more initializations
     matched <- match_support(Xhat, Yhat,Q = Q_init
                              ,lambda_init = lambda_init
                              ,lambda_final = lambda_final
@@ -34,6 +34,9 @@ nonpar <- function(A,B,d = 5,nsims =100,Q_init = NULL,lambda_init = .5
   result <- nonpar.test(Xhat,Ynew,nsims,alpha=alpha)
   return(result)
 }
+
+
+
 
 #' actually run the test
 #' @param Xhat the embedded first graph
